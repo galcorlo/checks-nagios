@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# check_sphinx RAC1
+
+set -e
+set -u
+
+TOTAL=$(/usr/local/mysql55/bin/mysql -sN -h0 -P2555 -e "select count(*) from audio0 where  MATCH('$1')")
+
+if [ -z $TOTAL ]; then
+   echo NOK
+   exit 1
+fi
+
+if [ $TOTAL -gt 0 ]; then
+   echo OK
+else
+   echo NOK
+   exit 1
+fi
+
+

@@ -5,8 +5,8 @@ VALORS=$(/usr/sbin/ipmi-sensors -g Current --no-header-output --legacy-output 2>
 if [ $? -ne 0 ]; then
    VALORS=$(/usr/sbin/ipmi-sensors -g Current)
    if [ $? -ne 0 ]; then
-      echo "ipmi-sensors no ha funcionat"
-      exit -1
+      echo "ipmi-sensors no ha funcionat $VALORS"
+      exit 1
    fi
 fi
 
@@ -17,7 +17,9 @@ echo "$VALORS" | awk '/^[0-9]+: (.+) \(Current\): (.+) A .+: \[(.+)\]/ {
    gsub(/ /, "", camp);
    estat_total=estat_total camp"="estat" ";
    perfdata=perfdata" "camp "=" ampers"; ";
+   total_ampers+=ampers;
+   sortida=sortida camp"="estat" ("ampers") ";
 }
 END {
-print estat_total " | " perfdata;
+print total_ampers"A "sortida" | " perfdata;
 }'
