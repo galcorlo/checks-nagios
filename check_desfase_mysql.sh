@@ -11,7 +11,7 @@ CURRENT_HOST=$(hostname)
 MYSQL=/usr/local/mysql/bin/mysql
 TEMPS_EXPIRACIO=120
 
-INFO_MYSQL=$($MYSQL -h${IP} -u${USER} -p${PASSWORD} -e "show slave status\G")
+INFO_MYSQL=$($MYSQL -h${IP} -u${USER} -p${PASSWORD} -e "show slave status\G" 2>&1)
 
 if [ $? -ne 0 ]; then
    echo -e 'delete ${HOST_DB}_sec_bm\r' | nc localhost 11211 > /dev/null
@@ -19,7 +19,7 @@ if [ $? -ne 0 ]; then
    exit -1
 fi
 
-SECONDS_BEHIND_MASTER=$(echo -n "$INFO_MYSQL" | sed -n 's/.*Seconds_Behind_Master: //p')
+SECONDS_BEHIND_MASTER=$(echo -n "$INFO_MYSQL" | sed -n 's/.*Seconds_Behind_Master: //p' 2>&1)
 
 if [ $? -ne 0 ]; then
    echo -e 'delete ${HOST_DB}_sec_bm\r' | nc localhost 11211 > /dev/null
